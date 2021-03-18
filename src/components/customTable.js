@@ -1,7 +1,9 @@
 import React from 'react';
 
+/*
+* The method to render each row for the table.
+*/
 const RowData = ({row}) => {
-
   return (
       (function() {
         let cell = [];
@@ -15,6 +17,9 @@ const RowData = ({row}) => {
   )
 };
 
+/*
+* The render method to display items in data passed to this component.
+*/
 const CustomTable = ({title, data, rowCls}) => {
 
   return (

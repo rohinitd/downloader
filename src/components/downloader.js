@@ -16,23 +16,36 @@ const Downloader = ({data, title}) => {
     }
   };
 
-  const [modalIsOpen,setModelIsOpen] = React.useState(false);
+  // state variable to render modal.
+  const [modalIsOpen, setModalIsOpen] = React.useState(false);
+  // state variable to display modal contents.
   const [modalContent, setModalContent] = React.useState([]);
+  // state variable to track checked value of checkbox at each row.
   const [selected, setSelected] = React.useState(new Array(data.length).fill(false));
+  // state variable to tracked checked state of master checkbox.
   const [allChecked, setAllChecked] = React.useState(false);
 
+  /*
+  * Mimic of ComponentDidUpdate lifecycle method - set master checkbox state.
+  */
   React.useEffect(() => {
     if(! selected.find((item) => (item))) {
       setAllChecked(false);
     }
   }, [selected]);
 
+  /*
+  * OnChange handler for row checkboxes.
+  */
   const handleChange = (idx) => {
     let selectedCopy = [...selected];
     selectedCopy[idx] = !selectedCopy[idx];
     setSelected(selectedCopy);
   };
 
+  /*
+  * OnChange handler for master checkbox.
+  */
   const handleAllChecked = () => {
     setAllChecked(!allChecked);
     let selectedCopy = selected.map((item, idx) => {
@@ -45,6 +58,9 @@ const Downloader = ({data, title}) => {
     setSelected(selectedCopy);
   };
 
+  /*
+  * Method to display count if any checkbox is checked for download.
+  */
   const getSelectedCount = () => {
     let count = 0;
     selected.forEach((item) => {
@@ -76,10 +92,13 @@ const Downloader = ({data, title}) => {
       }
       row.push(data[i][key]);
     }
-    
     tableData.push(row);
   }
 
+  /*
+  * Click handler to handle download button.
+  * sets modal to open with the right data to display in modal.
+  */
   const handleDownloadClick = () => {
     let alertStr = [];
     for(let i = 0; i < selected.length; i++) {
@@ -87,19 +106,29 @@ const Downloader = ({data, title}) => {
         alertStr.push([data[i].path, data[i].device]);
       }
     }
-    setModelIsOpen(true);
+    setModalIsOpen(true);
     setModalContent(alertStr);
   };
 
+  /*
+  * Method to handle close button inside modal.
+  */
+  const closeModal = () => {
+    setModalContent([]);
+    setModalIsOpen(false);
+  };
+
+  /*
+  * Prop to be passed to custom table for higlighting row based on
+  * checked value of checkbox.
+  */
   const rowCls = selected.map((item) => {
     return item ? 'row-highlighted' : '';
   });
 
-  const closeModal = () => {
-    setModalContent([]);
-    setModelIsOpen(false);
-  };
-
+  /*
+  * The render method
+  */
   return (
      <div>
       <div className="main-div">
