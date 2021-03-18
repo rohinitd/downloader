@@ -3,7 +3,7 @@ import CustomTable from './customTable';
 import 'font-awesome/css/font-awesome.min.css';
 import Modal from 'react-modal';
 
-const Downloader = ({data, title}) => {
+const Downloader = ({data, title, onDownload}) => {
 
   const customStyles = {
     content : {
@@ -121,6 +121,9 @@ const Downloader = ({data, title}) => {
     }
     setModalIsOpen(true);
     setModalContent(alertStr);
+    if(onDownload) {
+      onDownload(data.filter((d, idx) => selected[idx]));
+    }
   };
 
   /*
