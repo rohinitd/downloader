@@ -16,6 +16,10 @@ td, th {
 
 tr:hover {background-color: #f2f2f2;}
 
+input:indeterminate {
+  box-shadow: 0 0 1px 1px blue;
+}
+
 .row-highlighted {
   background-color: #ddd
 }

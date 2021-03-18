@@ -24,15 +24,27 @@ const Downloader = ({data, title}) => {
   const [selected, setSelected] = React.useState(new Array(data.length).fill(false));
   // state variable to tracked checked state of master checkbox.
   const [allChecked, setAllChecked] = React.useState(false);
+  // ref variable to handle indeterminate state of checkbox.
+  const masterCheckBoxRef = React.useRef();
 
   /*
   * Mimic of ComponentDidUpdate lifecycle method - set master checkbox state.
   */
   React.useEffect(() => {
-    if(! selected.find((item) => (item))) {
+    let [numSelected, numAvailable] = data.reduce((acc, d, idx) => {
+      return [acc[0] + (selected[idx] ? 1 : 0), acc[1] + (d.status.toLowerCase() === "available" ? 1 : 0)];
+    }, [0, 0]);
+
+    masterCheckBoxRef.current.indeterminate = false;
+
+    if (numSelected === 0) {
       setAllChecked(false);
+    } else if (numSelected < numAvailable) {
+      masterCheckBoxRef.current.indeterminate = true;
+    } else {
+      setAllChecked(true);
     }
-  }, [selected]);
+  }, [selected, data]);
 
   /*
   * OnChange handler for row checkboxes.
@@ -71,6 +83,7 @@ const Downloader = ({data, title}) => {
     return count;
   };
 
+  // Data modelling for data to be passed into custom table.
   const tableData = [];
   for(let i = 0; i < data.length; i++) {
     let row = [];
@@ -134,7 +147,7 @@ const Downloader = ({data, title}) => {
       <div className="main-div">
         <div className="paddingCls">
           <label>
-            <input type="checkbox" name="checkbox" value="value" checked={allChecked} onChange={handleAllChecked} />
+            <input type="checkbox" name="checkbox" value="value" checked={allChecked} ref={masterCheckBoxRef} onChange={handleAllChecked} />
             Selected {`${getSelectedCount() ? getSelectedCount() : 'None'}`}
           </label>
         </div>
